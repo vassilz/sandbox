@@ -26,7 +26,8 @@ public class ArqBean {
 	@EJB
 	private ArqDAO dao;
 	
-	public static final String LUCENE_INDEX = "lucene/index";
+	@EJB
+	private LuceneBean lucene;
 
 	public String greetMe(String myName) {
 		
@@ -39,25 +40,6 @@ public class ArqBean {
 	}
 	
 	public SearchResult searchWithLucene() throws IOException {
-		Directory luceneDir = FSDirectory.open(new File(LUCENE_INDEX));
-		IndexSearcher searcher = new IndexSearcher(DirectoryReader.open(luceneDir));
-		
-		Query query = new MatchAllDocsQuery();
-		TopDocs topDocs = searcher.search(query, 10);
-		if (topDocs == null) {
-			return new SearchResult();
-		}
-		
-		List<Document> docs = new ArrayList<Document>();
-		for (int i=0; i<topDocs.totalHits; i++) {
-			ScoreDoc sd = topDocs.scoreDocs[i];
-			Document doc = searcher.doc(sd.doc);
-			
-			searcher.explain(query, sd.doc);
-			
-			docs.add(doc);
-		}
-		
-		return new SearchResult(docs.toArray(new Document[]{}));
+		return lucene.allDocsSearch();
 	}
 }

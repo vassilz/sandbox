@@ -1,5 +1,8 @@
 package org.vassilz.arquillian;
 
+import java.util.Arrays;
+import java.util.List;
+
 import org.apache.lucene.document.Document;
 
 public class SearchResult {
@@ -8,6 +11,10 @@ public class SearchResult {
 
 	public SearchResult(Document... docs) {
 		this.docs = docs;
+	}
+	
+	public List<Document> getDocs() {
+		return Arrays.asList(docs.clone());
 	}
 	
 	@Override

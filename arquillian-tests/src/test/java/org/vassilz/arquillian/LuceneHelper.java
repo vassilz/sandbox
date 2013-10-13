@@ -10,6 +10,9 @@ import org.apache.lucene.document.IntField;
 import org.apache.lucene.document.TextField;
 import org.apache.lucene.index.IndexWriter;
 import org.apache.lucene.index.IndexWriterConfig;
+import org.apache.lucene.queryparser.classic.ParseException;
+import org.apache.lucene.queryparser.classic.QueryParser;
+import org.apache.lucene.search.Query;
 import org.apache.lucene.store.Directory;
 import org.apache.lucene.store.FSDirectory;
 import org.apache.lucene.util.Version;
@@ -21,14 +24,15 @@ public class LuceneHelper {
 	private LuceneHelper() {
 
 	}
-	
+
 	private IndexWriter writerInstance() throws IOException {
-		IndexWriterConfig writerConfig = new IndexWriterConfig(Version.LUCENE_45, new SimpleAnalyzer(Version.LUCENE_45));
-		Directory luceneDir = FSDirectory.open(new File(ArqBean.LUCENE_INDEX));
+		IndexWriterConfig writerConfig = new IndexWriterConfig(
+				Version.LUCENE_45, new SimpleAnalyzer(Version.LUCENE_45));
+		Directory luceneDir = FSDirectory.open(new File(LuceneBean.INDEX_LOCATION));
 		return new IndexWriter(luceneDir, writerConfig);
 	}
 
-	public void indexData() throws IOException {
+	public void createIndex() throws IOException {
 		IndexWriter writer = writerInstance();
 
 		Document doc = new Document();
@@ -45,5 +49,12 @@ public class LuceneHelper {
 		writer.deleteAll();
 
 		writer.close();
+	}
+
+	public static Query parseQuery(String qString) throws ParseException {
+		QueryParser parser = new QueryParser(Version.LUCENE_45, null,
+				new SimpleAnalyzer(Version.LUCENE_45));
+		
+		return parser.parse(qString);
 	}
 }
