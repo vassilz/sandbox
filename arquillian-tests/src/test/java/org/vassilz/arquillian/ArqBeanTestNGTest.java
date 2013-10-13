@@ -14,8 +14,8 @@ import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
 import org.testng.Assert;
 import org.testng.Reporter;
-import org.testng.annotations.BeforeClass;
-import org.testng.annotations.BeforeTest;
+import org.testng.annotations.AfterMethod;
+import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
 // TODO @BeforeTest, @BeforeClass, @Before... get familiar with TestNG..!
@@ -30,30 +30,41 @@ public class ArqBeanTestNGTest extends Arquillian {
 
 	@Deployment
 	public static WebArchive createWar() {
-		
+
 		Reporter.log("create deployment", true);
 
-		File[] libraries = Maven.resolver().loadPomFromFile("pom.xml")
-				.resolve("org.apache.lucene:lucene-core").withTransitivity()
-				.asFile();
+		File[] libraries = Maven
+				.resolver()
+				.loadPomFromFile("pom.xml")
+				.resolve("org.apache.lucene:lucene-core",
+						"org.apache.lucene:lucene-analyzers-common")
+				.withTransitivity().asFile();
 
 		return ShrinkWrap
 				.create(WebArchive.class, "arq-test.war")
-				.addClasses(ArqBean.class, ArqDAO.class)
+				.addClasses(ArqBean.class, ArqDAO.class, LuceneHelper.class,
+						SearchResult.class)
 				// , ArqBeanJUnitTest.class) uncomment for jboss-managed
 				.addAsWebInfResource(EmptyAsset.INSTANCE,
 						ArchivePaths.create("beans.xml"))
 				.addAsLibraries(libraries);
 	}
 
-	@BeforeClass
-	public static void beforeClass() {
-		Reporter.log("before class", true);
-	}
+	// @BeforeClass
+	// public static void beforeClass() {
+	// Reporter.log("before class", true);
+	// }
 
-	@BeforeTest
-	public void before() {
-		Reporter.log("before", true);
+	@BeforeMethod
+	public void beforeMethod() throws IOException {
+		Reporter.log("before method", true);
+		LuceneHelper.instance.indexData();
+	}
+	
+	@AfterMethod
+	public void afterMethod() throws IOException {
+		Reporter.log("after method", true);
+		LuceneHelper.instance.disposeOfIndex();
 	}
 
 	@EJB
@@ -62,16 +73,18 @@ public class ArqBeanTestNGTest extends Arquillian {
 	// @Ignore
 	@Test
 	public void greetMe() {
-		 Assert.assertEquals("Hello, Vassil", bean.greetMe("Vassil"));
+		Assert.assertEquals("Hello, Vassil", bean.greetMe("Vassil"));
 	}
 
 	@Test
 	public void testWithLucene() throws IOException {
-		bean.searchWithLucene();
+		SearchResult result = bean.searchWithLucene();
+		Reporter.log(result.toString(), true);
 	}
 
 	@Test
 	public void foo() {
 		System.out.println("Skip tests, please :)");
 	}
+
 }
