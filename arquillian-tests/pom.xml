@@ -9,14 +9,10 @@
 
 			<!-- Override dependency resolver with latest version. This must go *BEFORE* 
 				the Arquillian BOM. -->
-				<!-- No need for now, default is 2.0.0 - recent enough -->
-			<!-- <dependency>
-				<groupId>org.jboss.shrinkwrap.resolver</groupId>
-				<artifactId>shrinkwrap-resolver-bom</artifactId>
-				<version>${version.shrinkwrap.resolvers}</version>
-				<scope>import</scope>
-				<type>pom</type>
-			</dependency>-->
+			<!-- No need for now, default is 2.0.0 - recent enough -->
+			<!-- <dependency> <groupId>org.jboss.shrinkwrap.resolver</groupId> <artifactId>shrinkwrap-resolver-bom</artifactId> 
+				<version>${version.shrinkwrap.resolvers}</version> <scope>import</scope> 
+				<type>pom</type> </dependency> -->
 
 			<dependency>
 				<groupId>org.jboss.arquillian</groupId>
@@ -58,7 +54,6 @@
 			<version>${version.junit}</version>
 		</dependency>
 
-		<!-- 
 		<dependency>
 			<groupId>org.apache.lucene</groupId>
 			<artifactId>lucene-core</artifactId>
@@ -71,7 +66,6 @@
 			<scope>test</scope>
 			<type>pom</type>
 		</dependency>
-		-->
 
 
 	</dependencies>
@@ -96,8 +90,11 @@
 					<version>${version.org.jboss.jbossas}</version>
 					<scope>test</scope>
 				</dependency>
-				<!-- <dependency> <groupId>org.jboss.arquillian.protocol</groupId> <artifactId>arquillian-protocol-servlet</artifactId> 
-					<scope>test</scope> </dependency> -->
+				<dependency>
+					<groupId>org.jboss.arquillian.protocol</groupId>
+					<artifactId>arquillian-protocol-servlet</artifactId>
+					<scope>test</scope>
+				</dependency>
 			</dependencies>
 			<!-- This optional build configuration downloads and extracts JBoss AS 
 				automatically -->
@@ -151,13 +148,16 @@
 					<version>${version.org.jboss.jbossas}</version>
 					<scope>test</scope>
 				</dependency>
-				<!-- <dependency> <groupId>org.jboss.arquillian.protocol</groupId> <artifactId>arquillian-protocol-servlet</artifactId> 
-					<scope>test</scope> </dependency> -->
+				<dependency>
+					<groupId>org.jboss.arquillian.protocol</groupId>
+					<artifactId>arquillian-protocol-servlet</artifactId>
+					<scope>test</scope>
+				</dependency>
 			</dependencies>
 		</profile>
-	
-  </profiles>
-  
+
+	</profiles>
+
 	<build>
 		<pluginManagement>
 			<plugins>
