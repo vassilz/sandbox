@@ -2,24 +2,24 @@ package org.vassilz.arquillian;
 
 import java.io.File;
 import java.io.IOException;
+
 import javax.ejb.EJB;
 
 import org.jboss.arquillian.container.test.api.Deployment;
-import org.jboss.arquillian.junit.Arquillian;
+import org.jboss.arquillian.testng.Arquillian;
 import org.jboss.shrinkwrap.api.ArchivePaths;
 import org.jboss.shrinkwrap.api.ShrinkWrap;
 import org.jboss.shrinkwrap.api.asset.EmptyAsset;
 import org.jboss.shrinkwrap.api.spec.WebArchive;
 import org.jboss.shrinkwrap.resolver.api.maven.Maven;
-import org.junit.Assert;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.vassilz.arquillian.ArqBean;
-import org.vassilz.arquillian.ArqDAO;
+import org.testng.Assert;
+import org.testng.Reporter;
+import org.testng.annotations.BeforeClass;
+import org.testng.annotations.BeforeTest;
+import org.testng.annotations.Test;
 
-@RunWith(Arquillian.class)
-public class ArqBeanTest {
+// TODO @BeforeTest, @BeforeClass, @Before... get familiar with TestNG..!
+public class ArqBeanTestNGTest extends Arquillian {
 
 	// @Deployment
 	// public static JavaArchive createJar() {
@@ -30,15 +30,30 @@ public class ArqBeanTest {
 
 	@Deployment
 	public static WebArchive createWar() {
+		
+		Reporter.log("create deployment", true);
 
 		File[] libraries = Maven.resolver().loadPomFromFile("pom.xml")
 				.resolve("org.apache.lucene:lucene-core").withTransitivity()
 				.asFile();
 
-		return ShrinkWrap.create(WebArchive.class, "arq-test.war")
+		return ShrinkWrap
+				.create(WebArchive.class, "arq-test.war")
 				.addClasses(ArqBean.class, ArqDAO.class)
-				.addAsWebInfResource(EmptyAsset.INSTANCE, ArchivePaths.create("beans.xml"))
+				// , ArqBeanJUnitTest.class) uncomment for jboss-managed
+				.addAsWebInfResource(EmptyAsset.INSTANCE,
+						ArchivePaths.create("beans.xml"))
 				.addAsLibraries(libraries);
+	}
+
+	@BeforeClass
+	public static void beforeClass() {
+		Reporter.log("before class", true);
+	}
+
+	@BeforeTest
+	public void before() {
+		Reporter.log("before", true);
 	}
 
 	@EJB
@@ -47,16 +62,15 @@ public class ArqBeanTest {
 	// @Ignore
 	@Test
 	public void greetMe() {
-		Assert.assertEquals("Hello, Vassil", bean.greetMe("Vassil"));
+		 Assert.assertEquals("Hello, Vassil", bean.greetMe("Vassil"));
 	}
-	
+
 	@Test
 	public void testWithLucene() throws IOException {
 		bean.searchWithLucene();
 	}
 
-	// @Test
-	@Ignore
+	@Test
 	public void foo() {
 		System.out.println("Skip tests, please :)");
 	}
