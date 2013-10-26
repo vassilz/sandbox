@@ -6,6 +6,7 @@ import org.apache.lucene.queryparser.classic.ParseException;
 import org.apache.lucene.queryparser.classic.QueryParser;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.Version;
+import org.vassilz.test.lucene.Fields;
 
 public class QueryParserUtil {
 	
@@ -33,7 +34,7 @@ public class QueryParserUtil {
 //	}
 
 	private static final Analyzer defaultAnalyzer = new SimpleAnalyzer(Version.LUCENE_45);
-	private static final String DEFAULT_FIELD = "";
+	public static final String DEFAULT_FIELD = Fields.TF;
 	
 	private static QueryParser getParserInstance() {
 		return new QueryParser(Version.LUCENE_45, DEFAULT_FIELD, defaultAnalyzer);
